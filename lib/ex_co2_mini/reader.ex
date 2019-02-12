@@ -16,7 +16,7 @@ defmodule ExCO2Mini.Reader do
     GenServer.start_link(__MODULE__, device)
   end
 
-  def subscribe(reader, target \\ self()) do
+  def subscribe(reader, target \\ self()) when is_pid(target) do
     GenServer.call(reader, {:subscribe, target})
   end
 
