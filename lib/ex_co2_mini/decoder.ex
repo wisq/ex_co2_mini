@@ -48,13 +48,16 @@ defmodule ExCO2Mini.Decoder do
     Enum.take(list, -shift) ++ Enum.drop(list, -shift)
   end
 
-  defp checksum!(<<b1, b2, b3, b4, b5, _, _, _>> = data) do
+  defp checksum!(<<b1, b2, b3, b4, b5, b6, b7, b8>> = data) do
     cond do
       b5 != 0x0D ->
         raise "Checksum failed (b5): #{inspect(data)}"
 
       (b1 + b2 + b3 &&& 0xFF) != b4 ->
         raise "Checksum failed (b123 vs b4): #{inspect(data)}"
+
+      {b6, b7, b8} != {0, 0, 0} ->
+        raise "Checksum failed (b678): #{inspect(data)}"
 
       true ->
         data
