@@ -8,6 +8,8 @@ defmodule ExCO2Mini.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      description: description(),
+      package: package(),
       compilers: [:elixir_make] ++ Mix.compilers()
     ]
   end
@@ -16,6 +18,22 @@ defmodule ExCO2Mini.MixProject do
   def application do
     [
       extra_applications: [:logger]
+    ]
+  end
+
+  defp description do
+    """
+    ExCO2Mini is a library to read carbon dioxide and temperature data from
+    the CO2Mini USB sensor, also known as the RAD-0301.
+    """
+  end
+
+  defp package do
+    [
+      files: ["lib", "mix.exs", "README.md", "LICENSE"],
+      maintainers: ["Adrian Irving-Beer"],
+      licenses: ["Apache Version 2.0"],
+      links: %{GitHub: "https://github.com/wisq/ex_co2_mini"}
     ]
   end
 
