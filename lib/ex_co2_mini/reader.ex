@@ -5,9 +5,10 @@ defmodule ExCO2Mini.Reader do
   alias ExCO2Mini.Decoder
 
   defmodule State do
-    @enforce_keys [:port]
+    @enforce_keys [:port, :log_name]
     defstruct(
       port: nil,
+      log_name: nil,
       subscribers: MapSet.new(),
       send_from: nil
     )
@@ -18,7 +19,12 @@ defmodule ExCO2Mini.Reader do
     subscribers = Keyword.get(opts, :subscribers, [])
     send_from = if Keyword.get(opts, :send_from_name), do: Keyword.fetch!(opts, :name)
 
-    GenServer.start_link(__MODULE__, {device, subscribers, send_from}, opts)
+    log_name =
+      Keyword.get(opts, :name, __MODULE__)
+      |> Atom.to_string()
+      |> String.replace("Elixir.", "")
+
+    GenServer.start_link(__MODULE__, {device, subscribers, send_from, log_name}, opts)
   end
 
   def subscribe(reader, target \\ self()) do
@@ -26,16 +32,18 @@ defmodule ExCO2Mini.Reader do
   end
 
   @impl true
-  def init({device, subscribers, send_from}) do
+  def init({device, subscribers, send_from, log_name}) do
     args = decoder_key() ++ [device]
     port = Port.open({:spawn_executable, reader_executable()}, [:binary, {:args, args}])
 
     state = %State{
       port: port,
       subscribers: MapSet.new(subscribers),
-      send_from: send_from || self()
+      send_from: send_from || self(),
+      log_name: log_name
     }
 
+    Logger.info("#{state.log_name} started.")
     {:ok, state}
   end
 
