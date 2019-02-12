@@ -35,6 +35,7 @@ defmodule ExCO2Mini.Reader do
   def init({device, subscribers, send_from, log_name}) do
     args = decoder_key() ++ [device]
     port = Port.open({:spawn_executable, reader_executable()}, [:binary, {:args, args}])
+    Port.monitor(port)
 
     state = %State{
       port: port,
@@ -62,6 +63,12 @@ defmodule ExCO2Mini.Reader do
     end)
 
     {:noreply, state}
+  end
+
+  @impl true
+  def handle_info({:DOWN, _ref, :port, port, reason}, %State{port: port} = state) do
+    Logger.error("#{state.log_name} port has died: #{inspect(reason)}")
+    {:stop, reason, state}
   end
 
   defp reader_executable do
