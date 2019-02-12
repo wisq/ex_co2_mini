@@ -1,4 +1,4 @@
-defmodule ExCo2Mini.MixProject do
+defmodule ExCO2Mini.MixProject do
   use Mix.Project
 
   def project do

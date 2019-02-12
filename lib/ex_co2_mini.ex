@@ -1,6 +1,6 @@
-defmodule ExCo2Mini do
+defmodule ExCO2Mini do
   @moduledoc """
-  Documentation for ExCo2Mini.
+  Documentation for ExCO2Mini.
   """
 
   @doc """
@@ -8,7 +8,7 @@ defmodule ExCo2Mini do
 
   ## Examples
 
-      iex> ExCo2Mini.hello()
+      iex> ExCO2Mini.hello()
       :world
 
   """

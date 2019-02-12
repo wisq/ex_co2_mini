@@ -1,8 +1,8 @@
-defmodule ExCo2MiniTest do
+defmodule ExCO2MiniTest do
   use ExUnit.Case
-  doctest ExCo2Mini
+  doctest ExCO2Mini
 
   test "greets the world" do
-    assert ExCo2Mini.hello() == :world
+    assert ExCO2Mini.hello() == :world
   end
 end

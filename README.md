@@ -1,4 +1,4 @@
-# ExCo2Mini
+# ExCO2Mini
 
 **TODO: Add description**
 
