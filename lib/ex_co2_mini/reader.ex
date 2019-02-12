@@ -8,24 +8,33 @@ defmodule ExCO2Mini.Reader do
     @enforce_keys [:port]
     defstruct(
       port: nil,
-      subscribers: MapSet.new()
+      subscribers: MapSet.new(),
+      send_from: nil
     )
   end
 
-  def start_link(device) do
-    GenServer.start_link(__MODULE__, device)
+  def start_link(opts) do
+    device = Keyword.fetch!(opts, :device)
+    subscribers = Keyword.get(opts, :subscribers, [])
+    send_from = if Keyword.get(opts, :send_from_name), do: Keyword.fetch!(opts, :name)
+
+    GenServer.start_link(__MODULE__, {device, subscribers, send_from}, opts)
   end
 
-  def subscribe(reader, target \\ self()) when is_pid(target) do
+  def subscribe(reader, target \\ self()) do
     GenServer.call(reader, {:subscribe, target})
   end
 
   @impl true
-  def init(device) do
+  def init({device, subscribers, send_from}) do
     args = decoder_key() ++ [device]
     port = Port.open({:spawn_executable, reader_executable()}, [:binary, {:args, args}])
 
-    state = %State{port: port}
+    state = %State{
+      port: port,
+      subscribers: MapSet.new(subscribers),
+      send_from: send_from || self()
+    }
 
     {:ok, state}
   end
@@ -41,7 +50,7 @@ defmodule ExCO2Mini.Reader do
     {_key, _value} = data = Decoder.decode(bytes)
 
     Enum.each(state.subscribers, fn pid ->
-      send(pid, {self(), data})
+      send(pid, {state.send_from, data})
     end)
 
     {:noreply, state}

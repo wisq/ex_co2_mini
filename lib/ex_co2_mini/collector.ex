@@ -12,13 +12,11 @@ defmodule ExCO2Mini.Collector do
     )
   end
 
-  def start_link(reader) when is_pid(reader) do
-    GenServer.start_link(__MODULE__, reader)
-  end
+  def start_link(opts) do
+    reader = Keyword.fetch!(opts, :reader)
+    subscribe_as = if Keyword.get(opts, :subscribe_as_name), do: Keyword.fetch!(opts, :name)
 
-  def start_link(reader) when is_atom(reader) do
-    Process.whereis(reader)
-    |> start_link()
+    GenServer.start_link(__MODULE__, {reader, subscribe_as}, opts)
   end
 
   defp query(pid, key, fun \\ & &1) do
@@ -43,8 +41,8 @@ defmodule ExCO2Mini.Collector do
   # end
 
   @impl true
-  def init(reader) do
-    Reader.subscribe(reader, self())
+  def init({reader, subscribe_as}) do
+    Reader.subscribe(reader, subscribe_as || self())
     state = %State{reader: reader}
     {:ok, state}
   end
