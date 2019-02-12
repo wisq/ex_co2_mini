@@ -8,12 +8,16 @@ defmodule ExCO2Mini.Reader do
     @enforce_keys [:port]
     defstruct(
       port: nil,
-      subscribers: []
+      subscribers: MapSet.new()
     )
   end
 
   def start_link(device) do
     GenServer.start_link(__MODULE__, device)
+  end
+
+  def subscribe(reader, target \\ self()) do
+    GenServer.call(reader, {:subscribe, target})
   end
 
   @impl true
@@ -27,11 +31,18 @@ defmodule ExCO2Mini.Reader do
   end
 
   @impl true
+  def handle_call({:subscribe, pid}, _from, state) do
+    state = %State{state | subscribers: MapSet.put(state.subscribers, pid)}
+    {:reply, :ok, state}
+  end
+
+  @impl true
   def handle_info({port, {:data, bytes}}, %State{port: port} = state) do
-    bytes
-    |> Decoder.decode()
-    |> inspect()
-    |> Logger.debug()
+    {_key, _value} = data = Decoder.decode(bytes)
+
+    Enum.each(state.subscribers, fn pid ->
+      send(pid, {self(), data})
+    end)
 
     {:noreply, state}
   end
