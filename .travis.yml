@@ -1,0 +1,21 @@
+language: elixir
+sudo: false
+elixir:
+  - 1.8
+otp_release:
+  - 20.2
+  - 21.2
+env:
+  - MIX_ENV=test
+cache:
+  directories:
+    - _build/test/lib
+    - deps
+before_cache:
+  - rm -rf _build/test/lib/ex_co2_mini
+notifications:
+  email: false
+  slack:
+    on_success: change
+    rooms:
+      - secure: a07MAVopWK/pdRLhLPyJeV0WWO3ZwMgVuEMjfsXnHsj5QxTLB0BmTDSL2ijXdsMQdT35ozOQ9hDJTO2fgUKnB7ubHibaRBewHaJj8ApN/OQMi0NyV0UajjTE70ebE0XtMa07qTpK2bXoY59w+36QGkvrqtk86vyQxIN1SiysUlumFb1kOibfn8gq6O20sSZsR7EZmay+/vjtzNRVvI5D9cT9vo/x0ZO+EAFz4iOBlExQGqcKnswH0qrKclNu0lKLjLmAeRoLBcWDg9opQD42eJvnch2fYjYxiGZ9qqjQs0sbLGVANVlRMeVIpko7gWr6S5DSKtD+wBaXauMN+ZcRAal0EO17Zv1FmLHilfkkLsjKfljUDIG/c+GSEg33dYMYS6TcgWHkxcHNUbT/PU37AU2TMoq/dumGqzHKPsm6wXa3+nMjVpmZC9X6WzLFPWOkitGvJye5A1KA31uI9S/jQrfYeLhpd9C8Kx063G2MWmnyNvBCHGHUFolIHCeozMd/K7I+TYHADdZEO/6j5ThUwCLd6SciK/mragQfHIP6M4aWvFU9W13HrMSI9de0Z5eA3wVf1RZyOlqXpIiFbdq34fStoLCINe/M5yaTSvvTstbkE1HhbmIxyMVXDiDhoK9ucXoe6mVGoZDa2wDldJy6xUVKMEv+Z0eYZ82Cmleodmc=
