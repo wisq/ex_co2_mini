@@ -52,7 +52,12 @@ int main(int argc, char **argv) {
 			perror("read");
 			return -1;
 		}
-		write(STDOUT, buf, bytes);
+
+		res = write(STDOUT, buf, bytes);
+		if (res < 0) {
+			perror("write");
+			return -1;
+		}
 	}
 
 	return 0;
