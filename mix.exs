@@ -31,7 +31,7 @@ defmodule ExCO2Mini.MixProject do
 
   defp package do
     [
-      files: ["lib", "mix.exs", "README.md", "LICENSE"],
+      files: ["lib", "src", "mix.exs", "Makefile", "README.md", "LICENSE"],
       maintainers: ["Adrian Irving-Beer"],
       licenses: ["Apache Version 2.0"],
       links: %{GitHub: "https://github.com/wisq/ex_co2_mini"}
