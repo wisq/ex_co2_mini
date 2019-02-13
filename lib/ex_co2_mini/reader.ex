@@ -5,7 +5,7 @@ defmodule ExCO2Mini.Reader do
   alias ExCO2Mini.Decoder
 
   @moduledoc """
-  Reads data packets from the USB CO2 sensor, decodes them, and sends events
+  Reads data packets from the USB CO₂ sensor, decodes them, and sends events
   to the subscribed process(es).
 
   Due to the `ioctl` calls required, this module will open a `Port` to a tiny
@@ -24,11 +24,11 @@ defmodule ExCO2Mini.Reader do
   end
 
   @doc """
-  Starts reading from the USB CO2 sensor device.
+  Starts reading from the USB CO₂ sensor device.
 
   `opts` is a keyword list.  It accepts all of the options that `GenServer.start_link/3` does, as well as the following:
 
-  * `opts[:device]` **(required)** — The path to the CO2 device, e.g. `/dev/hidraw0` or a symlink to the device.
+  * `opts[:device]` **(required)** — The path to the CO₂Mini device, e.g. `/dev/hidraw0` or a symlink to the device.
   * `opts[:subscribers]` — A list of initial subscribers (default: none).  
     * This can be used to save a call to `subscribe/2`, and/or to ensure correct data routing in the case of a supervisor restart.
   * `opts[:send_from_name]` — If true, then `opts[:name]` must be included as well.  Messages sent by this reader will use that name instead of the PID.

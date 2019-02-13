@@ -1,6 +1,6 @@
-# ExCO2Mini
+# ExCO₂Mini
 
-ExCO2Mini is a library to read carbon dioxide and temperature data from the CO2Mini USB sensor, also known as the RAD-0301.
+ExCO₂Mini is a library to read carbon dioxide and temperature data from the CO₂Mini USB sensor, also known as the RAD-0301.
 
 This library only reads data from the device.  If you want to record that data somewhere, see e.g. [ddco2](https://github.com/wisq/ddco2) for recording to StatsD.
 
@@ -9,7 +9,7 @@ This library only reads data from the device.  If you want to record that data s
 
 ## Device setup
 
-**ExCO2Mini currently only supports Linux.**  Your device needs to show up as a `/dev/hidraw*` device, and it needs to be able to compile a small C utility that uses Linux-specific HID ioctls.
+**ExCO₂Mini currently only supports Linux.**  Your device needs to show up as a `/dev/hidraw*` device, and it needs to be able to compile a small C utility that uses Linux-specific HID ioctls.
 
 To allow a regular user to access the device, you can set up a `udev` rule, such as the following:
 
@@ -25,7 +25,7 @@ Note that the device will often report abnormally high readings immediately afte
 
 ## Installation
 
-ExCO2Mini is [available in Hex](https://hex.pm/packages/ex_co2_mini).
+ExCO₂Mini is [available in Hex](https://hex.pm/packages/ex_co2_mini).
 
 If you haven't already, start a project with `mix new`.
 
@@ -39,7 +39,7 @@ def deps do
 end
 ```
 
-Run `mix deps.get` to pull ExCO2Mini into your project, and you're good to go.
+Run `mix deps.get` to pull ExCO₂Mini into your project, and you're good to go.
 
 ## Usage
 
@@ -57,11 +57,11 @@ end
 {:ok, collector} = ExCO2Mini.Collector.start_link(reader: reader)
 # Give it a few seconds to collect data:
 Process.sleep(5_000)
-# Now you should be able to retrieve CO2 (parts per million)
+# Now you should be able to retrieve CO₂ (parts per million)
 # and temperature (degrees Celsius) data:
 co2 = ExCo2Mini.Collector.co2_ppm(collector)
 temp = ExCO2Mini.Collector.temperature(collector)
-Logger.info("CO2 = #{co2} ppm, temperature = #{temp} °C")
+Logger.info("CO₂ = #{co2} ppm, temperature = #{temp} °C")
 ```
 
 ### Supervised Usage
@@ -106,4 +106,4 @@ Copyright © 2019, Adrian Irving-Beer.
 
 Parts of this code are based on code and data from the ["Reverse-Engineering a low-cost USB CO₂ monitor" project](https://hackaday.io/project/5301-reverse-engineering-a-low-cost-usb-co-monitor).  My thanks go out to Henryk Plötz, whose reverse engineering made this project possible.
 
-ExCO2Mini is released under the [Apache 2 License](../../blob/master/LICENSE) and is provided with **no warranty**.  This library is aimed at hobbyists and home enthusiasts, and should be used in **non-life-critical situations only**.
+ExCO₂Mini is released under the [Apache 2 License](../../blob/master/LICENSE) and is provided with **no warranty**.  This library is aimed at hobbyists and home enthusiasts, and should be used in **non-life-critical situations only**.

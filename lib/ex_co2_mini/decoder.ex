@@ -3,7 +3,7 @@ defmodule ExCO2Mini.Decoder do
   use Bitwise
 
   @moduledoc """
-  Decodes packets from the CO2Mini device.
+  Decodes packets from the CO₂Mini device.
   """
 
   @key [0xC4, 0xC6, 0xC0, 0x92, 0x40, 0x23, 0xDC, 0x96]

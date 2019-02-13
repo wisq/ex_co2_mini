@@ -5,7 +5,7 @@ defmodule ExCO2Mini.Collector do
   alias ExCO2Mini.Reader
 
   @moduledoc """
-  Collects data packets from a `ExCO2Mini.Reader` instance and provides simple on-demand access to CO2 and temperature data.
+  Collects data packets from a `ExCO2Mini.Reader` instance and provides simple on-demand access to CO₂ and temperature data.
   """
 
   defmodule State do
@@ -50,7 +50,7 @@ defmodule ExCO2Mini.Collector do
     end
   end
 
-  @doc "Returns the CO2 concentration, in parts per million (ppm)."
+  @doc "Returns the CO₂ concentration, in parts per million (ppm)."
   def co2_ppm(pid) do
     query(pid, 0x50)
   end
@@ -60,7 +60,7 @@ defmodule ExCO2Mini.Collector do
     query(pid, 0x42, &(&1 / 16.0 - 273.15))
   end
 
-  # Not supported by CO2Mini:
+  # Not supported by CO₂Mini:
   #
   # def relative_humidity(pid) do
   #  query(pid, 0x44, &(&1 / 100.0))
