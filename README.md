@@ -34,7 +34,7 @@ Then, add `ex_co2_mini` to your list of dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:ex_co2_mini, "~> 0.1.0"}
+    {:ex_co2_mini, "~> 0.1.1"}
   ]
 end
 ```
