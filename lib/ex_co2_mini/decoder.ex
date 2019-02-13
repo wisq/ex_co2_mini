@@ -2,9 +2,26 @@ defmodule ExCO2Mini.Decoder do
   require Logger
   use Bitwise
 
+  @moduledoc """
+  Decodes packets from the CO2Mini device.
+  """
+
   @key [0xC4, 0xC6, 0xC0, 0x92, 0x40, 0x23, 0xDC, 0x96]
 
+  @doc """
+  Returns a list of eight integers, representing the eight-byte key used to
+  communicate with the device.
+  """
   def key, do: @key
+
+  @doc """
+  Decodes (and checksums) an eight-byte data packet received from the device.
+
+  Returns `{key, value}`, where `key` is an 8-bit integer and `value` is a
+  16-bit integer.
+
+  Raises an error if the data packet does not pass the checksum routine.
+  """
 
   def decode(<<data::bytes-size(8)>>) do
     data

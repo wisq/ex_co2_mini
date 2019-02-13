@@ -4,7 +4,16 @@ defmodule ExCO2Mini.Reader do
 
   alias ExCO2Mini.Decoder
 
+  @moduledoc """
+  Reads data packets from the USB CO2 sensor, decodes them, and sends events
+  to the subscribed process(es).
+
+  Due to the `ioctl` calls required, this module will open a `Port` to a tiny
+  C wrapper, rather than reading the device directly.
+  """
+
   defmodule State do
+    @moduledoc false
     @enforce_keys [:port, :log_name]
     defstruct(
       port: nil,
@@ -13,6 +22,19 @@ defmodule ExCO2Mini.Reader do
       send_from: nil
     )
   end
+
+  @doc """
+  Starts reading from the USB CO2 sensor device.
+
+  `opts` is a keyword list.  It accepts all of the options that `GenServer.start_link/3` does, as well as the following:
+
+  * `opts[:device]` **(required)** — The path to the CO2 device, e.g. `/dev/hidraw0` or a symlink to the device.
+  * `opts[:subscribers]` — A list of initial subscribers (default: none).  
+    * This can be used to save a call to `subscribe/2`, and/or to ensure correct data routing in the case of a supervisor restart.
+  * `opts[:send_from_name]` — If true, then `opts[:name]` must be included as well.  Messages sent by this reader will use that name instead of the PID.
+
+  Returns `{:ok, pid}` once the reader (and wrapper process) has been successfully started.
+  """
 
   def start_link(opts) do
     device = Keyword.fetch!(opts, :device)
@@ -26,6 +48,17 @@ defmodule ExCO2Mini.Reader do
 
     GenServer.start_link(__MODULE__, {device, subscribers, send_from, log_name}, opts)
   end
+
+  @doc """
+  Starts sending data values to a target process.
+
+  `target` can be a PID or a registered name (atom or module).
+
+  A given name or PID can only be subscribed once.  Subsequent calls to this
+  function will be effectively ignored, and `target` will still only receive
+  one message per data packet.  However, if a process may receive multiple
+  messages per packet if subscribed under multiple names.
+  """
 
   def subscribe(reader, target \\ self()) do
     GenServer.call(reader, {:subscribe, target})

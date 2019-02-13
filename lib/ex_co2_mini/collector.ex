@@ -4,7 +4,12 @@ defmodule ExCO2Mini.Collector do
 
   alias ExCO2Mini.Reader
 
+  @moduledoc """
+  Collects data packets from a `ExCO2Mini.Reader` instance and provides simple on-demand access to CO2 and temperature data.
+  """
+
   defmodule State do
+    @moduledoc false
     @enforce_keys [:reader, :log_name]
     defstruct(
       reader: nil,
@@ -12,6 +17,19 @@ defmodule ExCO2Mini.Collector do
       data: %{}
     )
   end
+
+  @doc """
+  Creates a process to collect data.
+
+  `opts` is a keyword list.  It accepts all of the options that `GenServer.start_link/3` does, as well as the following:
+
+  * `opts[:reader]` **(required)** — The PID or name (atom) of a `ExCO2Meter.Reader` process.
+    * The collector will automatically call `ExCO2Mini.Reader.subscribe/2`.
+  * `opts[:subscribe_as_name]` — If true, then `opts[:name]` must be included as well.  The collector will subscribe using its name rather than PID.
+    * This can be useful in preventing the `ExCO2Mini.Reader` process from accumulating defunct subscriptions if this collector is restarted repeatedly.
+
+  Returns `{:ok, pid}` once the collector has been successfully started and has subscribed to the reader.
+  """
 
   def start_link(opts) do
     reader = Keyword.fetch!(opts, :reader)
@@ -32,10 +50,12 @@ defmodule ExCO2Mini.Collector do
     end
   end
 
+  @doc "Returns the CO2 concentration, in parts per million (ppm)."
   def co2_ppm(pid) do
     query(pid, 0x50)
   end
 
+  @doc "Returns the ambient temperature, in degrees centigrade (°C)."
   def temperature(pid) do
     query(pid, 0x42, &(&1 / 16.0 - 273.15))
   end
