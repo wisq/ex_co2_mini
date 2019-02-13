@@ -8,6 +8,7 @@ defmodule ExCO2Mini.MixProject do
       elixir: "~> 1.8",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      docs: docs(),
       description: description(),
       package: package(),
       compilers: [:elixir_make] ++ Mix.compilers()
@@ -34,6 +35,13 @@ defmodule ExCO2Mini.MixProject do
       maintainers: ["Adrian Irving-Beer"],
       licenses: ["Apache Version 2.0"],
       links: %{GitHub: "https://github.com/wisq/ex_co2_mini"}
+    ]
+  end
+
+  defp docs do
+    [
+      main: "readme",
+      extras: ["README.md"]
     ]
   end
 
