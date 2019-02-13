@@ -104,4 +104,6 @@ Full documentation can be found at [https://hexdocs.pm/ex_co2_mini](https://hexd
 
 Copyright © 2019, Adrian Irving-Beer.
 
+Parts of this code are based on code and data from the ["Reverse-Engineering a low-cost USB CO₂ monitor" project](https://hackaday.io/project/5301-reverse-engineering-a-low-cost-usb-co-monitor).  My thanks go out to Henryk Plötz, whose reverse engineering made this project possible.
+
 ExCO2Mini is released under the [Apache 2 License](../../blob/master/LICENSE) and is provided with **no warranty**.  This library is aimed at hobbyists and home enthusiasts, and should be used in **non-life-critical situations only**.
