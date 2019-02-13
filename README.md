@@ -4,6 +4,9 @@ ExCO2Mini is a library to read carbon dioxide and temperature data from the CO2M
 
 This library only reads data from the device.  If you want to record that data somewhere, see e.g. [ddco2](https://github.com/wisq/ddco2) for recording to StatsD.
 
+[![Build Status](https://travis-ci.org/wisq/ex_co2_mini.svg?branch=master)](https://travis-ci.org/wisq/ex_co2_mini)
+[![Hex.pm Version](http://img.shields.io/hexpm/v/ex_co2_mini.svg?style=flat)](https://hex.pm/packages/ex_co2_mini)
+
 ## Device setup
 
 **ExCO2Mini currently only supports Linux.**  Your device needs to show up as a `/dev/hidraw*` device, and it needs to be able to compile a small C utility that uses Linux-specific HID ioctls.
