@@ -30,35 +30,34 @@ defmodule ExCO2Mini.Decoder do
     |> extract()
   end
 
+  @ctmp [0x48, 0x74, 0x65, 0x6D, 0x70, 0x39, 0x39, 0x65]
+        |> Enum.map(fn n -> (n >>> 4 ||| n <<< 4) &&& 0xFF end)
+  @shuffle [2, 4, 0, 7, 1, 6, 5, 3]
+
+  # Honestly, this is pretty voodoo.
+  # It's taken directly from the hackaday.io project,
+  # but reformulated to more Elixir-style transformations.
   defp decrypt(<<data::bytes-size(8)>>, key) do
-    cstate = [0x48, 0x74, 0x65, 0x6D, 0x70, 0x39, 0x39, 0x65]
-    shuffle = [2, 4, 0, 7, 1, 6, 5, 3]
+    @shuffle
+    # Use @shuffle as a list of indices to extract:
+    |> Enum.map(&:binary.at(data, &1))
+    # XOR with the key:
+    |> Enum.zip(key)
+    |> Enum.map(fn {p1, key} -> p1 ^^^ key end)
+    # Zip indices [7, 0..6] (shifted) with indices [0..7] (plain)
+    |> zip_with_shifted_list(1)
+    # Take shifted (sx) + plain (x) and do some bitwise math on them:
+    |> Enum.map(fn {sx, x} -> (x >>> 3 ||| sx <<< 5) &&& 0xFF end)
+    # Zip with @ctmp and do more bitwise math:
+    |> Enum.zip(@ctmp)
+    |> Enum.map(fn {x, ct} -> 0x100 + x - ct &&& 0xFF end)
+    # Finally, dump to a binary (note: not `String`!) again.
+    |> :erlang.list_to_binary()
+  end
 
-    phase1 =
-      shuffle
-      |> Enum.map(&:binary.at(data, &1))
-
-    phase2 =
-      phase1
-      |> Enum.zip(key)
-      |> Enum.map(fn {p1, key} -> p1 ^^^ key end)
-
-    phase3 =
-      phase2
-      |> shift_list(1)
-      |> Enum.zip(phase2)
-      |> Enum.map(fn {s_p2, p2} -> (p2 >>> 3 ||| s_p2 <<< 5) &&& 0xFF end)
-
-    ctmp =
-      cstate
-      |> Enum.map(fn n -> (n >>> 4 ||| n <<< 4) &&& 0xFF end)
-
-    out =
-      phase3
-      |> Enum.zip(ctmp)
-      |> Enum.map(fn {p3, ct} -> 0x100 + p3 - ct &&& 0xFF end)
-
-    :erlang.list_to_binary(out)
+  defp zip_with_shifted_list(list, shift) do
+    shift_list(list, shift)
+    |> Enum.zip(list)
   end
 
   defp shift_list(list, shift) when shift > 0 do
