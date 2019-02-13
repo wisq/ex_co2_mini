@@ -33,6 +33,11 @@ int main(int argc, char **argv) {
 	char *filename = argv[9];
 	int fd = open(filename, 0);
 
+	/* Used for testing: */
+	if (!strncmp(filename, "fail-quietly", 13)) {
+		return -1;
+	}
+
 	if (fd < 0) {
 		fprintf(stderr, "Can't open %s: %s\n",
 			filename, strerror(errno));

@@ -57,7 +57,7 @@ defmodule ExCO2Mini.Reader do
   A given name or PID can only be subscribed once.  Subsequent calls to this
   function will be effectively ignored, and `target` will still only receive
   one message per data packet.  However, if a process may receive multiple
-  messages per packet if subscribed under multiple names.
+  messages per packet if subscribed under both its PID and name.
   """
 
   def subscribe(reader, target \\ self()) do
@@ -66,9 +66,8 @@ defmodule ExCO2Mini.Reader do
 
   @impl true
   def init({device, subscribers, send_from, log_name}) do
-    args = decoder_key() ++ [device]
-    port = Port.open({:spawn_executable, reader_executable()}, [:binary, {:args, args}])
-    Port.monitor(port)
+    Process.flag(:trap_exit, true)
+    port = open_port(device)
 
     state = %State{
       port: port,
@@ -99,9 +98,18 @@ defmodule ExCO2Mini.Reader do
   end
 
   @impl true
-  def handle_info({:DOWN, _ref, :port, port, reason}, %State{port: port} = state) do
-    Logger.error("#{state.log_name} port has died: #{inspect(reason)}")
-    {:stop, reason, state}
+  def handle_info({:EXIT, port, reason}, %State{port: port} = state) do
+    err = "#{state.log_name} port has died: #{inspect(reason)}"
+    Logger.error(err)
+    {:stop, err, state}
+  end
+
+  # Used for testing.
+  defp open_port(:dummy = dev), do: dev
+
+  defp open_port(device) do
+    args = decoder_key() ++ [device]
+    Port.open({:spawn_executable, reader_executable()}, [:binary, {:args, args}])
   end
 
   defp reader_executable do
